@@ -1,0 +1,129 @@
+# Monitoring Configuration
+
+# System metrics thresholds
+system:
+  cpu:
+    warning: 70
+    critical: 85
+    duration: 300  # seconds
+    
+  memory:
+    warning: 75
+    critical: 90
+    duration: 300
+    
+  disk:
+    warning: 80
+    critical: 90
+    check_interval: 3600
+
+# Test execution metrics
+test_execution:
+  response_time:
+    p95_threshold: 1000  # ms
+    p99_threshold: 2000  # ms
+    
+  error_rate:
+    warning: 5  # percent
+    critical: 10
+    window: 100  # tests
+    
+  success_rate:
+    minimum: 95  # percent
+    window: 1000  # tests
+
+# Performance metrics
+performance:
+  throughput:
+    minimum: 100  # req/sec
+    target: 500
+    
+  concurrent_users:
+    warning: 80  # percent of target
+    critical: 90
+    
+  resource_usage:
+    cpu_per_request: 0.1  # cpu seconds
+    memory_per_request: 10  # MB
+
+# Alert configuration
+alerts:
+  channels:
+    email:
+      enabled: true
+      recipients:
+        - team@example.com
+        
+    slack:
+      enabled: true
+      channel: "#testing-alerts"
+      
+    webhook:
+      enabled: false
+      url: "http://monitoring.example.com/webhook"
+
+  rules:
+    system_alerts:
+      priority: high
+      channels:
+        - email
+        - slack
+        
+    test_alerts:
+      priority: medium
+      channels:
+        - slack
+        
+    performance_alerts:
+      priority: low
+      channels:
+        - slack
+
+# Metrics collection
+collection:
+  interval: 60  # seconds
+  retention:
+    raw_data: 7  # days
+    aggregated: 90
+    
+  aggregation:
+    enabled: true
+    intervals:
+      - 300  # 5 minutes
+      - 3600  # 1 hour
+      - 86400  # 1 day
+
+# Visualization
+visualization:
+  default_timespan: 3600
+  refresh_interval: 60
+  max_datapoints: 1000
+  
+  dashboards:
+    system:
+      enabled: true
+      update_interval: 60
+      
+    tests:
+      enabled: true
+      update_interval: 300
+      
+    performance:
+      enabled: true
+      update_interval: 60
+
+# Export configuration
+export:
+  formats:
+    - prometheus
+    - json
+    - csv
+    
+  prometheus:
+    port: 9090
+    endpoint: "/metrics"
+    
+  file_export:
+    enabled: true
+    interval: 3600
+    path: "metrics/export"

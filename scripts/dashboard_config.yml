@@ -1,0 +1,102 @@
+# Dashboard Configuration
+
+# Appearance settings
+appearance:
+  theme: light  # light or dark
+  colors:
+    primary: '#2196F3'    # Blue
+    success: '#4CAF50'    # Green
+    warning: '#FFC107'    # Yellow
+    error: '#F44336'      # Red
+    info: '#2196F3'       # Blue
+  fonts:
+    family: 'Arial, sans-serif'
+    size_base: 14
+    size_title: 24
+    size_subtitle: 18
+
+# Plot configurations
+plots:
+  response_times:
+    type: histogram
+    bins: 50
+    color: '#2196F3'
+    show_grid: true
+    update_interval: 5  # seconds
+    
+  performance:
+    type: line
+    colors:
+      cpu: '#F44336'
+      memory: '#4CAF50'
+    show_grid: true
+    history_points: 1000
+    update_interval: 5
+    
+  triangle_types:
+    type: pie
+    colors:
+      equilateral: '#2196F3'
+      isosceles: '#4CAF50'
+      right: '#FFC107'
+      scalene: '#F44336'
+    show_percentage: true
+    
+  concurrent_users:
+    type: scatter
+    colors:
+      response_time: '#2196F3'
+      success_rate: '#4CAF50'
+    show_grid: true
+    
+  results_heatmap:
+    type: heatmap
+    colorscale: 'RdYlGn'
+    show_values: true
+    cell_height: 30
+
+# Data settings
+data:
+  max_points: 10000
+  retention_days: 30
+  auto_cleanup: true
+  export_format: json
+  backup_enabled: true
+
+# Monitoring settings
+monitoring:
+  enabled: true
+  interval: 5  # seconds
+  metrics:
+    - cpu_usage
+    - memory_usage
+    - response_time
+    - error_rate
+  alerts:
+    enabled: true
+    thresholds:
+      cpu_usage: 80  # percent
+      memory_usage: 85  # percent
+      response_time: 1000  # ms
+      error_rate: 1.0  # percent
+
+# Export settings
+export:
+  formats:
+    - png
+    - svg
+    - csv
+    - json
+  auto_export:
+    enabled: true
+    interval: 3600  # seconds
+    formats:
+      - png
+      - json
+
+# Dashboard updates
+updates:
+  auto_refresh: true
+  interval: 5  # seconds
+  history_size: 1000
+  cleanup_interval: 3600  # seconds

@@ -1,0 +1,177 @@
+# Data Profiling Configuration
+
+# Profile settings
+profile:
+  # HTML report settings
+  html_report:
+    enabled: true
+    minimal: false
+    explorative: true
+    title_prefix: "Test Data Profile"
+    
+    sections:
+      overview:
+        enabled: true
+        variables: true
+        correlations: true
+        missing: true
+        
+      distributions:
+        enabled: true
+        numeric: true
+        categorical: true
+        
+      interactions:
+        enabled: true
+        correlations: true
+        scatter_matrix: true
+
+  # Plot settings
+  plots:
+    enabled: true
+    style: seaborn
+    dpi: 300
+    size:
+      width: 15
+      height: 10
+      
+    types:
+      distribution: true
+      boxplot: true
+      violin: true
+      correlation: true
+      
+    colors:
+      primary: '#2196F3'
+      secondary: '#4CAF50'
+      error: '#F44336'
+      warning: '#FFC107'
+
+# Analysis settings
+analysis:
+  # Statistical analysis
+  statistics:
+    basic:
+      enabled: true
+      metrics:
+        - mean
+        - median
+        - std
+        - min
+        - max
+        - quartiles
+        
+    advanced:
+      enabled: true
+      metrics:
+        - skewness
+        - kurtosis
+        - mode
+        
+  # Distribution analysis
+  distributions:
+    bin_method: auto
+    kde: true
+    rug: true
+    
+  # Quality metrics
+  quality:
+    metrics:
+      - completeness
+      - uniqueness
+      - validity
+      - consistency
+    
+    thresholds:
+      completeness: 0.95
+      uniqueness: 0.90
+      validity: 0.95
+      consistency: 0.95
+
+# Output settings
+output:
+  # File formats
+  formats:
+    - html
+    - markdown
+    - json
+    - png
+    
+  # Directory structure
+  directories:
+    profiles: profiles
+    plots: plots
+    reports: reports
+    
+  # File naming
+  naming:
+    prefix: "profile"
+    include_timestamp: true
+    timestamp_format: "%Y%m%d_%H%M%S"
+
+# Performance settings
+performance:
+  # Memory management
+  memory:
+    max_rows: 1000000
+    sample_size: 10000
+    sampling_method: random
+    
+  # Processing
+  processing:
+    parallel: true
+    max_workers: 4
+    chunk_size: 10000
+
+# Visualization settings
+visualization:
+  # Plot style
+  style:
+    theme: seaborn
+    context: notebook
+    font_scale: 1.2
+    
+  # Color schemes
+  colors:
+    qualitative:
+      - '#2196F3'
+      - '#4CAF50'
+      - '#F44336'
+      - '#FFC107'
+      - '#9C27B0'
+      
+    sequential:
+      - '#E3F2FD'
+      - '#90CAF9'
+      - '#42A5F5'
+      - '#1E88E5'
+      - '#1565C0'
+      
+    diverging:
+      - '#EF5350'
+      - '#FFEE58'
+      - '#66BB6A'
+
+# Integration settings
+integration:
+  # Dashboard integration
+  dashboard:
+    enabled: true
+    update_interval: 300
+    max_history: 1000
+    
+  # Monitoring integration
+  monitoring:
+    enabled: true
+    metrics:
+      - profile_duration
+      - memory_usage
+      - error_rate
+    
+  # Export integration
+  export:
+    enabled: true
+    formats:
+      - prometheus
+      - grafana
+      - json

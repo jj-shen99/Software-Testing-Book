@@ -1,0 +1,45 @@
+test_settings:
+  # Test execution settings
+  parallel_tests: true
+  max_workers: 4
+  timeout_seconds: 300
+  
+  # Test categories
+  categories:
+    - unit
+    - integration
+    - performance
+    - security
+    
+  # Performance thresholds
+  thresholds:
+    response_time_ms: 500
+    error_rate_percent: 1
+    cpu_usage_percent: 80
+    memory_mb: 512
+    
+  # Test reporting
+  reports:
+    format: html
+    include_screenshots: true
+    save_console_output: true
+    generate_metrics: true
+    
+  # Monitoring
+  monitoring:
+    enabled: true
+    interval_seconds: 60
+    metrics:
+      - cpu_usage
+      - memory_usage
+      - response_time
+      - error_rate
+      
+  # Alerts
+  alerts:
+    email_notifications: true
+    slack_notifications: true
+    thresholds:
+      critical_errors: 1
+      test_failures: 5
+      performance_degradation: 10

@@ -1,0 +1,99 @@
+# Test Data Validation Rules
+
+# Triangle validation rules
+triangle:
+  sides:
+    min_value: 1
+    max_value: 100
+    type: integer
+    required: true
+    
+  inequalities:
+    - "a + b > c"
+    - "b + c > a"
+    - "a + c > b"
+    
+  types:
+    equilateral:
+      rule: "a == b == c"
+    isosceles:
+      rule: "a == b || b == c || a == c"
+    right:
+      rule: "a² + b² == c² || b² + c² == a² || a² + c² == b²"
+    scalene:
+      rule: "a != b && b != c && a != c"
+
+# Dataset validation rules
+dataset:
+  size:
+    small:
+      min: 10
+      max: 20
+    medium:
+      min: 100
+      max: 200
+    large:
+      min: 1000
+      max: 2000
+    performance:
+      min: 5000
+      max: 20000
+      
+  distribution:
+    valid_ratio:
+      min: 0.6
+      max: 0.8
+    triangle_types:
+      equilateral: 0.25
+      isosceles: 0.25
+      right: 0.25
+      scalene: 0.25
+
+# Data quality rules
+quality:
+  completeness:
+    required_fields: ["sides", "type", "area"]
+    missing_threshold: 0.01
+    
+  consistency:
+    check_rules:
+      - "area >= 0"
+      - "perimeter > 0"
+      - "type in valid_types"
+    
+  uniqueness:
+    duplicate_threshold: 0.05
+    
+  validity:
+    format_rules:
+      - "sides_are_integers"
+      - "area_is_float"
+      - "type_is_string"
+
+# Validation response
+response:
+  error_levels:
+    critical:
+      - "invalid_triangle"
+      - "missing_required_field"
+      - "data_type_mismatch"
+    warning:
+      - "distribution_skewed"
+      - "high_duplicates"
+      - "format_issues"
+    info:
+      - "unusual_dimensions"
+      - "rare_triangle_type"
+
+# Reporting
+reporting:
+  formats:
+    - json
+    - html
+    - markdown
+    
+  metrics:
+    - validation_rate
+    - error_distribution
+    - data_quality_score
+    - coverage_stats
