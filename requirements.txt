@@ -1,0 +1,34 @@
+# Core dependencies
+numpy>=1.21.0
+matplotlib>=3.4.0
+pytest>=6.2.0
+pytest-cov>=2.12.0
+pytest-xdist>=2.3.0  # For parallel test execution
+pytest-timeout>=2.0.0  # For test timeouts
+
+# Visualization dependencies
+seaborn>=0.11.0
+pandas>=1.3.0
+plotly>=5.1.0  # For interactive plots
+
+# Data processing
+scipy>=1.7.0
+statsmodels>=0.12.0  # For statistical analysis
+
+# Monitoring dependencies
+psutil>=5.8.0  # System metrics
+prometheus-client>=0.12.0  # Metrics export
+requests>=2.26.0  # HTTP client
+APScheduler>=3.8.1  # Task scheduling
+
+# Data quality and monitoring
+watchdog>=2.1.0  # File system monitoring
+pyyaml>=5.4.0  # YAML configuration
+great-expectations>=0.13.0  # Data validation
+pandas-profiling>=2.11.0  # Data profiling
+
+# Testing dependencies
+unittest2>=1.1.0  # Enhanced testing framework
+mock>=4.0.3  # Mocking framework
+coverage>=6.2  # Code coverage tool
+factory-boy>=3.2.0  # Test data factory
