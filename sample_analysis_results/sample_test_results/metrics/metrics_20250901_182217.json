@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-09-01T18:22:17.566393",
+  "metrics": {
+    "timestamps": [],
+    "cpu_usage": [
+      0
+    ],
+    "memory_usage": [
+      0
+    ],
+    "test_results": [],
+    "performance": [],
+    "quality_metrics": {
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "validity": 1.0
+    }
+  },
+  "analysis": {
+    "system": {
+      "cpu": {
+        "mean": 0.0,
+        "max": 0.0,
+        "p95": 0.0
+      },
+      "memory": {
+        "mean": 0.0,
+        "max": 0.0,
+        "p95": 0.0
+      }
+    },
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    "quality": {
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "validity": 1.0
+    }
+  }
+}

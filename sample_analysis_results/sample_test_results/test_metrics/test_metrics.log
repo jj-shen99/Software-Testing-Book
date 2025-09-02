@@ -1,0 +1,60 @@
+2025-09-01 17:02:16,032 - INFO - Test cleanup completed
+2025-09-01 17:03:24,385 - INFO - Test cleanup completed
+2025-09-01 17:03:24,406 - INFO - Test cleanup completed
+2025-09-01 17:03:26,647 - INFO - Test cleanup completed
+2025-09-01 17:03:26,682 - INFO - Test cleanup completed
+2025-09-01 17:03:26,915 - INFO - Monitoring server started on port 8000
+2025-09-01 17:03:28,919 - INFO - Test cleanup completed
+2025-09-01 17:03:28,937 - INFO - Test cleanup completed
+2025-09-01 17:03:28,955 - INFO - Test cleanup completed
+2025-09-01 17:07:35,292 - INFO - Test cleanup completed
+2025-09-01 17:07:35,309 - INFO - Test cleanup completed
+2025-09-01 17:07:37,582 - INFO - Test cleanup completed
+2025-09-01 17:07:37,641 - INFO - Test cleanup completed
+2025-09-01 17:07:37,678 - INFO - Monitoring server started on port 8000
+2025-09-01 17:07:39,683 - INFO - Test cleanup completed
+2025-09-01 17:07:39,701 - INFO - Test cleanup completed
+2025-09-01 17:07:39,714 - INFO - Test cleanup completed
+2025-09-01 17:29:34,816 - INFO - Test cleanup completed
+2025-09-01 17:29:34,858 - INFO - Test cleanup completed
+2025-09-01 17:29:37,115 - INFO - Test cleanup completed
+2025-09-01 17:29:37,256 - INFO - Test cleanup completed
+2025-09-01 17:29:37,805 - INFO - Monitoring server started on port 8000
+2025-09-01 17:29:39,807 - ERROR - Error getting test metrics: unsupported operand type(s) for +: 'int' and 'MutexValue'
+2025-09-01 17:29:39,808 - INFO - Test cleanup completed
+2025-09-01 17:29:39,851 - INFO - Test cleanup completed
+2025-09-01 17:29:39,878 - INFO - Test cleanup completed
+2025-09-01 17:30:49,746 - INFO - Test cleanup completed
+2025-09-01 17:30:49,788 - INFO - Test cleanup completed
+2025-09-01 17:30:52,051 - INFO - Test cleanup completed
+2025-09-01 17:30:52,096 - INFO - Test cleanup completed
+2025-09-01 17:30:52,144 - INFO - Monitoring server started on port 8000
+2025-09-01 17:30:54,149 - ERROR - Error getting test metrics: 'Histogram' object has no attribute '_value'
+2025-09-01 17:30:54,150 - INFO - Monitoring server stopped
+2025-09-01 17:30:54,150 - INFO - Test cleanup completed
+2025-09-01 17:30:54,190 - INFO - Test cleanup completed
+2025-09-01 17:30:54,233 - INFO - Test cleanup completed
+2025-09-01 18:22:15,310 - INFO - Test cleanup completed
+2025-09-01 18:22:15,324 - INFO - Test cleanup completed
+2025-09-01 18:22:17,552 - INFO - Test cleanup completed
+2025-09-01 18:22:17,566 - INFO - Metrics saved to /Users/jianjun.shen/Books__@/PUBLISHED/SoftwareTesting-1/sample_analysis_results/test_results_2025_09_01/metrics/metrics_20250901_182217.json
+2025-09-01 18:22:17,567 - INFO - Test cleanup completed
+2025-09-01 18:22:17,925 - INFO - Monitoring server started on port 8000
+2025-09-01 18:22:19,929 - ERROR - Error getting test metrics: 'Histogram' object has no attribute '_value'
+2025-09-01 18:22:19,929 - INFO - Monitoring server stopped
+2025-09-01 18:22:19,929 - INFO - Test cleanup completed
+2025-09-01 18:22:19,957 - INFO - Collected test metrics: {'duration': 1.5, 'status': 'pass', 'error': None}
+2025-09-01 18:22:19,957 - INFO - Test cleanup completed
+2025-09-01 18:22:19,973 - INFO - Test cleanup completed
+2025-09-01 18:40:15,318 - INFO - Test cleanup completed
+2025-09-01 18:40:15,336 - INFO - Test cleanup completed
+2025-09-01 18:40:17,584 - INFO - Test cleanup completed
+2025-09-01 18:40:17,627 - INFO - Metrics saved to /Users/jianjun.shen/Books__@/PUBLISHED/SoftwareTesting-1/sample_analysis_results/test_results_2025_09_01/metrics/metrics_20250901_184017.json
+2025-09-01 18:40:17,628 - INFO - Test cleanup completed
+2025-09-01 18:40:18,150 - INFO - Monitoring server started on port 8000
+2025-09-01 18:40:20,154 - ERROR - Error getting test metrics: 'Histogram' object has no attribute '_value'
+2025-09-01 18:40:20,154 - INFO - Monitoring server stopped
+2025-09-01 18:40:20,154 - INFO - Test cleanup completed
+2025-09-01 18:40:20,171 - INFO - Collected test metrics: {'duration': 1.5, 'status': 'pass', 'error': None}
+2025-09-01 18:40:20,171 - INFO - Test cleanup completed
+2025-09-01 18:40:20,191 - INFO - Test cleanup completed
