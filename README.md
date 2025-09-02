@@ -6,13 +6,13 @@
 **ISBN**: 1693054906  
 **Available at**: [Amazon](https://www.amazon.com/dp/1693054906)
 
-This repository contains comprehensive solutions, examples, and test implementations for the exercises and concepts presented in the book.
+This repository contains comprehensive solutions, examples, and test implementations for the exercises and concepts presented in the book. Complete solutions to all exercise problems are provided in `Solutions_to_Exercise_Problems.pdf`.
 
 *Copyright © 2025 JJ Shen. All rights reserved. The materials in this repository are based on the book and should be used in conjunction with the published text.*
 
 ## Book Companion Code
 This repository serves as the official companion code repository for the book. It includes:
-- Complete solutions to all chapter exercises
+- Complete solutions to all chapter exercises (available in `Solutions_to_Exercise_Problems.pdf`)
 - Working examples of testing patterns
 - Automated test frameworks
 - Performance testing tools
@@ -58,6 +58,7 @@ This repository serves as the official companion code repository for the book. I
 │       ├── alerts/                # Alert history
 │       └── visualizations/        # Generated charts
 ├── problems/                       # Exercise problems
+│   └── Solutions_to_Exercise_Problems.pdf  # Complete exercise solutions
 ├── scripts/                        # Test automation and monitoring
 │   ├── alert_manager.py           # Alert handling
 │   ├── ci_monitor.py              # CI system monitoring
