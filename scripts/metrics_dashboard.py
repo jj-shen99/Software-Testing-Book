@@ -3,64 +3,317 @@
 import os
 import json
 import yaml
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
-import plotly.graph_objs as go
 import pandas as pd
 from datetime import datetime, timedelta
-from typing import Dict, Any, List
+from typing import Dict, List, Any
+from dash import Dash, dcc, html
+from dash.dependencies import Input, Output
+import plotly.graph_objs as go
+from metrics_visualizer import MetricsVisualizer
 
 class MetricsDashboard:
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.layout_file = os.path.join(self.base_dir, "scripts/dashboard_layout.yml")
+        self.config_file = os.path.join(
+            self.base_dir,
+            "workflows/yaml_workflows/dashboard_config.yml"
+        )
         self.metrics_dir = os.path.join(
             self.base_dir,
             "sample_analysis_results",
             f"test_results_{datetime.now().strftime('%Y_%m_%d')}",
             "metrics"
         )
-        self.load_layout()
-        self.app = dash.Dash(__name__)
+        os.makedirs(self.metrics_dir, exist_ok=True)
+        
+        self.visualizer = MetricsVisualizer()
+        self.app = Dash(__name__)
+        self.refresh_interval = 30  # seconds
+        self.config = {}
+        
+        # Load dashboard configuration
+        self.load_config()
+        
+        # Setup dashboard layout
         self.setup_layout()
-
-    def load_layout(self):
-        """Load dashboard layout configuration"""
-        with open(self.layout_file, 'r') as f:
-            self.layout_config = yaml.safe_load(f)
-
-    def load_metrics(self, days: int = 7) -> Dict[str, pd.DataFrame]:
-        """Load metrics data"""
-        metrics = {
-            'performance': [],
-            'test': [],
-            'quality': []
+        
+        # Register callbacks
+        self.register_callbacks()
+        
+    def load_config(self):
+        """Load dashboard configuration"""
+        try:
+            with open(self.config_file, 'r') as f:
+                self.config = yaml.safe_load(f)
+        except Exception as e:
+            print(f"Error loading config: {str(e)}")
+            self.config = {
+                'layout': {
+                    'panels': [
+                        {'type': 'performance', 'width': 12},
+                        {'type': 'quality', 'width': 6},
+                        {'type': 'tests', 'width': 6}
+                    ],
+                    'styles': {
+                        'background': '#ffffff',
+                        'text': '#333333'
+                    }
+                }
+            }
+            
+    def setup_layout(self):
+        """Setup dashboard layout"""
+        layout_config = self.config.get('layout', {})
+        styles = layout_config.get('styles', {
+            'background': '#ffffff',
+            'text': '#333333'
+        })
+        
+        self.app.layout = html.Div([
+            # Header
+            html.H1('Test Metrics Dashboard', style={'color': styles['text']}),
+            
+            # Filters section
+            html.Div([
+                html.Label('Time Range:', style={'color': styles['text']}),
+                dcc.Dropdown(
+                    id='time-range',
+                    options=[
+                        {'label': 'Last Hour', 'value': '1h'},
+                        {'label': 'Last Day', 'value': '1d'},
+                        {'label': 'Last Week', 'value': '1w'}
+                    ],
+                    value='1d'
+                )
+            ], style={'marginBottom': '20px'}),
+            
+            # Main content grid
+            html.Div([
+                # Left column - Performance and Quality
+                html.Div([
+                    html.Div([
+                        html.H2('Performance Metrics', style={'color': styles['text']}),
+                        html.Div(id='performance-metrics')
+                    ], className='section'),
+                    html.Div([
+                        html.H2('Quality Metrics', style={'color': styles['text']}),
+                        html.Div(id='quality-metrics')
+                    ], className='section')
+                ], style={'width': '50%', 'display': 'inline-block', 'verticalAlign': 'top'}),
+                
+                # Right column - Test Results and Trends
+                html.Div([
+                    html.Div([
+                        html.H2('Test Results', style={'color': styles['text']}),
+                        html.Div(id='test-metrics')
+                    ], className='section'),
+                    html.Div([
+                        html.H2('Trend Analysis', style={'color': styles['text']}),
+                        html.Div([
+                            dcc.Graph(id='success-rate-trend'),
+                            dcc.Graph(id='response-time-trend'),
+                            dcc.Graph(id='quality-trend')
+                        ])
+                    ], className='section')
+                ], style={'width': '50%', 'display': 'inline-block', 'verticalAlign': 'top'})
+            ]),
+            
+            # Auto-refresh
+            dcc.Interval(
+                id='refresh-interval',
+                interval=self.refresh_interval * 1000
+            )
+        ], style={'backgroundColor': styles['background'], 'padding': '20px'})
+        
+    def register_callbacks(self):
+        """Register dashboard callbacks"""
+        @self.app.callback(
+            [
+                Output('performance-metrics', 'children'),
+                Output('quality-metrics', 'children'),
+                Output('test-metrics', 'children'),
+                Output('success-rate-trend', 'figure'),
+                Output('response-time-trend', 'figure'),
+                Output('quality-trend', 'figure')
+            ],
+            [Input('time-range', 'value'),
+             Input('refresh-interval', 'n_intervals')]
+        )
+        def update_metrics(time_range, n_intervals):
+            try:
+                # Get metrics data
+                perf_data = self.get_performance_data(time_range)
+                quality_data = self.get_quality_data()
+                test_data = self.get_test_data()
+                
+                # Create main visualizations
+                perf_graphs = self.visualizer.create_performance_graphs(perf_data)
+                quality_gauges = self.visualizer.create_quality_gauges(quality_data)
+                test_charts = self.visualizer.create_test_charts(test_data)
+                
+                # Create trend visualizations
+                success_rate_trend = go.Figure()
+                success_rate_trend.add_trace(go.Scatter(
+                    x=list(range(len(perf_data['response_time']))),
+                    y=[test_data['passed'] / (test_data['passed'] + test_data['failed']) * 100],
+                    mode='lines+markers',
+                    name='Success Rate',
+                    line=dict(color='#2ca02c')
+                ))
+                success_rate_trend.update_layout(title='Test Success Rate Trend (%)')
+                
+                response_time_trend = go.Figure()
+                response_time_trend.add_trace(go.Scatter(
+                    x=list(range(len(perf_data['response_time']))),
+                    y=perf_data['response_time'],
+                    mode='lines+markers',
+                    name='Response Time',
+                    line=dict(color='#1f77b4')
+                ))
+                response_time_trend.update_layout(title='Response Time Trend (ms)')
+                
+                quality_trend = go.Figure()
+                for metric, value in quality_data.items():
+                    quality_trend.add_trace(go.Scatter(
+                        x=[0],  # Current point
+                        y=[value * 100],
+                        mode='lines+markers',
+                        name=metric.title(),
+                        line=dict(color=self.visualizer.colors.get(metric, '#1f77b4'))
+                    ))
+                quality_trend.update_layout(title='Quality Metrics Trend (%)')
+                
+                return [
+                    html.Div([dcc.Graph(figure=g['figure']) for g in perf_graphs]),
+                    html.Div([dcc.Graph(figure=g['figure']) for g in quality_gauges]),
+                    html.Div([dcc.Graph(figure=g['figure']) for g in test_charts]),
+                    success_rate_trend,
+                    response_time_trend,
+                    quality_trend
+                ]
+            except Exception as e:
+                print(f"Error updating metrics: {str(e)}")
+                return [html.Div("Error loading metrics") for _ in range(6)]
+            
+    def get_layout(self) -> Dict:
+        """Get dashboard layout configuration"""
+        return self.config.get('layout', {})
+        
+    def get_callbacks(self) -> List[Dict]:
+        """Get registered callbacks"""
+        return [
+            {
+                'id': 'update_metrics',
+                'outputs': ['performance-metrics', 'quality-metrics', 'test-metrics'],
+                'inputs': ['time-range', 'refresh-interval']
+            }
+        ]
+        
+    def get_refresh_interval(self) -> int:
+        """Get dashboard refresh interval"""
+        return self.refresh_interval
+        
+    def export_dashboard(self, export_file: str):
+        """Export dashboard configuration"""
+        data = {
+            'layout': self.get_layout(),
+            'panels': [
+                {
+                    'type': 'performance',
+                    'config': {
+                        'charts': ['response_time', 'throughput', 'error_rate'],
+                        'type': 'line'
+                    }
+                },
+                {
+                    'type': 'quality',
+                    'config': {
+                        'metrics': ['completeness', 'consistency', 'validity'],
+                        'type': 'gauge'
+                    }
+                },
+                {
+                    'type': 'tests',
+                    'config': {
+                        'charts': ['distribution', 'counts'],
+                        'type': ['pie', 'bar']
+                    }
+                }
+            ],
+            'refresh_interval': self.refresh_interval,
+            'timestamp': datetime.now().isoformat()
         }
         
-        start_date = datetime.now() - timedelta(days=days)
-        
-        for root, _, files in os.walk(self.metrics_dir):
-            for file in files:
-                if file.startswith('ci_metrics_') and file.endswith('.json'):
-                    file_path = os.path.join(root, file)
-                    file_date = datetime.strptime(
-                        file[11:19],
-                        '%Y%m%d'
-                    )
-                    
-                    if file_date >= start_date:
-                        with open(file_path, 'r') as f:
-                            data = json.load(f)
-                            for category in metrics:
-                                if category in data:
-                                    metrics[category].append(data[category])
-                                    
+        with open(export_file, 'w') as f:
+            json.dump(data, f, indent=2)
+            
+    def get_performance_data(self, time_range: str) -> Dict[str, List[float]]:
+        """Get performance metrics data"""
+        # Mock data for testing
         return {
-            category: pd.DataFrame(data)
-            for category, data in metrics.items()
+            'response_time': [100, 150, 200],
+            'throughput': [1000, 1200, 800],
+            'error_rate': [0.01, 0.02, 0.015]
         }
+        
+    def get_quality_data(self) -> Dict[str, float]:
+        """Get quality metrics data"""
+        # Mock data for testing
+        return {
+            'completeness': 0.95,
+            'consistency': 0.98,
+            'validity': 0.92
+        }
+        
+    def get_test_data(self) -> Dict[str, int]:
+        """Get test results data"""
+        # Mock data for testing
+        return {
+            'passed': 95,
+            'failed': 3,
+            'skipped': 2
+        }
+    def __init__(self):
+        self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.config_file = os.path.join(
+            self.base_dir,
+            "workflows/yaml_workflows/dashboard_config.yml"
+        )
+        self.visualizer = MetricsVisualizer()
+        self.app = Dash(__name__)
+        self.refresh_interval = 30  # seconds
+        
+        # Load dashboard configuration
+        self.load_config()
+        
+        # Setup dashboard layout
+        self.setup_layout()
+        
+        # Register callbacks
+        self.register_callbacks()
+
+    def load_config(self):
+        """Load dashboard configuration"""
+        try:
+            with open(self.config_file, 'r') as f:
+                self.config = yaml.safe_load(f)
+                self.refresh_interval = self.config.get('refresh_interval', 30)
+        except Exception as e:
+            print(f"Error loading config: {str(e)}")
+            self.config = {
+                'layout': {
+                    'panels': [
+                        {'type': 'performance', 'width': 12},
+                        {'type': 'quality', 'width': 6},
+                        {'type': 'tests', 'width': 6}
+                    ],
+                    'styles': {
+                        'background': '#ffffff',
+                        'text': '#333333'
+                    }
+                },
+                'refresh_interval': 30
+            }
 
     def setup_layout(self):
         """Setup dashboard layout"""
@@ -71,7 +324,7 @@ class MetricsDashboard:
                 html.P(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"),
                 dcc.Interval(
                     id='interval-component',
-                    interval=self.layout_config['layout']['refresh_interval'] * 1000,
+                    interval=self.refresh_interval * 1000,
                     n_intervals=0
                 )
             ], className='header'),

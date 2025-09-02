@@ -4,30 +4,148 @@ import os
 import json
 import yaml
 import pandas as pd
-import plotly.graph_objects as go
+import plotly.graph_objs as go
 import plotly.express as px
-from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
-from typing import Dict, Any, List
+from typing import Dict, List, Any
 
 class MetricsVisualizer:
     def __init__(self):
-        self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.config_file = os.path.join(
-            self.base_dir,
-            "workflows/yaml_workflows/monitoring_config.yml"
+        self.colors = {
+            'primary': '#1f77b4',
+            'success': '#2ca02c',
+            'warning': '#ff7f0e',
+            'error': '#d62728'
+        }
+        
+    def create_performance_graphs(self, data: Dict[str, List[float]]) -> List[Dict[str, Any]]:
+        """Create performance metric graphs"""
+        graphs = []
+        
+        # Response time line chart
+        if 'response_time' in data:
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                y=data['response_time'],
+                mode='lines+markers',
+                name='Response Time',
+                line=dict(color=self.colors['primary'])
+            ))
+            fig.update_layout(title='Response Time Trend')
+            graphs.append({
+                'id': 'response_time_trend',
+                'figure': fig
+            })
+            
+        # Throughput bar chart
+        if 'throughput' in data:
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                y=data['throughput'],
+                name='Throughput',
+                marker_color=self.colors['success']
+            ))
+            fig.update_layout(title='Throughput')
+            graphs.append({
+                'id': 'throughput_chart',
+                'figure': fig
+            })
+            
+        # Error rate line
+        if 'error_rate' in data:
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                y=data['error_rate'],
+                mode='lines',
+                name='Error Rate',
+                line=dict(color=self.colors['error'])
+            ))
+            fig.update_layout(title='Error Rate Trend')
+            graphs.append({
+                'id': 'error_rate_trend',
+                'figure': fig
+            })
+            
+        return graphs
+        
+    def create_quality_gauges(self, data: Dict[str, float]) -> List[Dict[str, Any]]:
+        """Create quality metric gauges"""
+        gauges = []
+        
+        for metric, value in data.items():
+            fig = go.Figure(go.Indicator(
+                mode='gauge+number',
+                value=value * 100,  # Convert to percentage
+                domain={'x': [0, 1], 'y': [0, 1]},
+                title={'text': metric.title()},
+                gauge={
+                    'axis': {'range': [0, 100]},
+                    'bar': {'color': self.colors['primary']},
+                    'steps': [
+                        {'range': [0, 60], 'color': self.colors['error']},
+                        {'range': [60, 80], 'color': self.colors['warning']},
+                        {'range': [80, 100], 'color': self.colors['success']}
+                    ]
+                }
+            ))
+            gauges.append({
+                'id': f'{metric}_gauge',
+                'figure': fig
+            })
+            
+        return gauges
+        
+    def create_test_charts(self, data: Dict[str, int]) -> List[Dict[str, Any]]:
+        """Create test results charts"""
+        charts = []
+        
+        # Pie chart for test distribution
+        fig = go.Figure(data=[go.Pie(
+            labels=list(data.keys()),
+            values=list(data.values()),
+            hole=.3,
+            marker=dict(colors=[self.colors['success'], self.colors['error'], self.colors['warning']])
+        )])
+        fig.update_layout(title='Test Results Distribution')
+        charts.append({
+            'id': 'test_distribution',
+            'figure': fig
+        })
+        
+        # Bar chart for test counts
+        fig = go.Figure(data=[go.Bar(
+            x=list(data.keys()),
+            y=list(data.values()),
+            marker_color=[self.colors['success'], self.colors['error'], self.colors['warning']]
+        )])
+        fig.update_layout(title='Test Results Count')
+        charts.append({
+            'id': 'test_counts',
+            'figure': fig
+        })
+        
+        return charts
+        
+    def create_trend_chart(self, data: Dict[str, List]) -> Dict[str, Any]:
+        """Create trend analysis chart"""
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=data['timestamps'],
+            y=data['values'],
+            mode='lines+markers',
+            name='Trend',
+            line=dict(color=self.colors['primary'])
+        ))
+        fig.update_layout(
+            title='Metric Trend Analysis',
+            xaxis_title='Time',
+            yaxis_title='Value'
         )
-        self.viz_dir = os.path.join(
-            self.base_dir,
-            "sample_analysis_results",
-            f"test_results_{datetime.now().strftime('%Y_%m_%d')}",
-            "visualizations"
-        )
-        os.makedirs(self.viz_dir, exist_ok=True)
-        self.load_config()
-
-    def load_config(self):
-        """Load visualization configuration"""
+        
+        return {
+            'id': 'trend_analysis',
+            'figure': fig
+        }
         with open(self.config_file, 'r') as f:
             self.config = yaml.safe_load(f)['visualization']
 

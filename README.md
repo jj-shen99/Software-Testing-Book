@@ -18,20 +18,159 @@ This repository serves as the official companion code repository for the book. I
 - Performance testing tools
 - Test analysis utilities
 
+## Chapter Test Examples
+
+### Basic Testing (Chapters 1-4)
+- Unit testing fundamentals
+- Test case design patterns
+- Boundary value analysis
+- Integration testing strategies
+
+### Advanced Testing (Chapters 5-8)
+- Test implementation techniques
+- Advanced testing patterns
+- Performance testing
+- Load and stress testing
+
+### Specialized Testing (Chapters 9-11)
+- Security testing patterns
+- Mobile application testing
+- DevOps and CI/CD testing
+
 ## Project Structure
 ```
 .
 ├── code/                           # Example code implementations
 ├── sample_analysis_results/        # Test solutions and analysis
-│   └── chapter_solutions_2025_09_01/
-│       ├── chapter_solutions.md    # Chapter-wise solutions
-│       ├── data_driven_tests.md    # Data-driven test examples
-│       ├── concurrency_tests.md    # Thread and sync tests
-│       ├── error_recovery_tests.md # Error handling patterns
-│       ├── equivalence_tests.md    # Equivalence classes
-│       ├── state_tests.md         # State-based testing
-│       └── test_organization.md    # Test structure
-└── problems/                       # Exercise problems
+│   ├── book_summary_2025_09_01/   # Book summary and analysis
+│   └── sample_testing_code/       # Chapter-wise test examples
+│       ├── chapter_1_tests.md     # Introduction to testing
+│       ├── chapter_2_tests.md     # Testing fundamentals
+│       ├── chapter_3_tests.md     # Testing methodologies
+│       ├── chapter_4_tests.md     # Test design techniques
+│       ├── chapter_5_tests.md     # Test implementation
+│       ├── chapter_6_8_tests.md   # Advanced testing
+│       └── chapter_9_11_tests.md  # Specialized testing
+├── problems/                       # Exercise problems
+├── scripts/                        # Test automation scripts
+│   ├── test_runner.py             # Test execution
+│   ├── test_analyzer.py           # Results analysis
+│   └── performance_tester.py      # Performance testing
+└── requirements.txt               # Python dependencies
+```
+
+## Test Automation Monitoring System
+
+### Overview
+A comprehensive monitoring solution for test automation, providing real-time insights into test execution, performance metrics, and quality indicators through an interactive dashboard.
+
+### Key Features
+- Real-time test execution monitoring
+- Performance metrics visualization
+- Quality metrics tracking
+- Interactive trend analysis
+- Configurable alerting system
+
+### Quick Start
+
+1. Install monitoring dependencies:
+```bash
+pip3 install -r requirements.txt
+```
+
+2. Generate sample test data:
+```bash
+./scripts/generate_test_data.py
+```
+
+3. Start the dashboard:
+```bash
+./scripts/start_dashboard.py
+```
+
+4. Access the dashboard at http://localhost:8051
+
+### Documentation
+- [User Guide](docs/user_guide.md) - Installation and usage instructions
+- [Architecture](docs/architecture.md) - System design and components
+
+### Monitoring Components
+
+#### 1. Metrics Collection
+- Test execution metrics
+- Performance data
+- System resource usage
+- Quality indicators
+
+#### 2. Visualization
+- Interactive graphs
+- Real-time updates
+- Trend analysis
+- Custom date ranges
+
+#### 3. Monitoring
+- Prometheus integration
+- Resource tracking
+- Alert management
+- Threshold configuration
+
+#### 4. Analysis
+- Historical trends
+- Success rate tracking
+- Performance patterns
+- Quality assessment
+
+## Test Automation
+
+### Running Tests
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run chapter-specific tests
+./scripts/test_runner.py --chapter 5
+
+# Run tests by category
+./scripts/test_runner.py --category performance
+
+# Analyze test results
+./scripts/test_analyzer.py chapter_5
+
+# Run performance tests
+./scripts/performance_tester.py --type load --users 100
+```
+
+### Test Scripts
+- `test_runner.py`: Executes tests by chapter or category
+- `test_analyzer.py`: Analyzes results and generates reports
+- `performance_tester.py`: Runs load, stress, and endurance tests
+
+### Results Analysis and Visualization
+Test results are stored in timestamped directories under `/sample_analysis_results/` with:
+
+#### Execution Reports
+```bash
+# Generate HTML test report
+./scripts/test_analyzer.py --format html chapter_5
+
+# Generate performance visualization
+./scripts/test_analyzer.py --plot performance chapter_5
+```
+
+#### Available Reports
+- Test execution summary
+- Performance metrics graphs
+- Code coverage maps
+- Error distribution charts
+- Response time histograms
+
+#### Automated Analysis
+```bash
+# Generate comprehensive analysis
+./scripts/test_analyzer.py --analyze-all chapter_5
+
+# Compare test runs
+./scripts/test_analyzer.py --compare run1 run2
 ```
 
 ## Test Categories
@@ -44,15 +183,102 @@ This repository serves as the official companion code repository for the book. I
 
 ### 2. Advanced Testing
 - Concurrency testing
-- Performance monitoring
-- Security validation
-- Error recovery
 
-### 3. Test Organization
+## Continuous Integration
+
+### Automated Testing Workflow
+```yaml
+name: Test Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Run tests
+      run: ./scripts/test_runner.py --category all
+```
+
+### Test Schedule
+- Unit Tests: Every commit
+- Integration Tests: Daily at 00:00 UTC
+- Performance Tests: Weekly on Sunday
+- Security Tests: Bi-weekly
+
+### Monitoring
+```bash
+# Monitor test execution
+./scripts/test_analyzer.py --monitor
+
+# View test metrics dashboard
+./scripts/test_analyzer.py --dashboard
+
+# Configure alerts
+./scripts/test_analyzer.py --configure-alerts
+```
+
+### Test Configuration
+
+Customize test execution using `workflows/yaml_workflows/test_config.yml`:
+
+```yaml
+test_settings:
+  # Execution settings
+  parallel_tests: true
+  max_workers: 4
+  timeout_seconds: 300
+  
+  # Performance thresholds
+  thresholds:
+    response_time_ms: 500
+    error_rate_percent: 1
+    cpu_usage_percent: 80
+    memory_mb: 512
+
+  # Monitoring settings
+  monitoring:
+    enabled: true
+    interval_seconds: 60
+    metrics:
+      - cpu_usage
+      - memory_usage
+      - response_time
+```
+
+### Test Reports
+- Automated HTML report generation
+- Performance trend analysis
+- Code coverage tracking
+- Error rate monitoring
+- Response time analysis
+
+### Test Organization
 - Test suite structure
 - Priority-based execution
 - Category-based grouping
 - Feature-based organization
+
+### Customization
+```bash
+# Configure test thresholds
+./scripts/test_runner.py --configure thresholds
+
+# Set up monitoring
+./scripts/test_analyzer.py --setup-monitoring
+
+# Configure notifications
+./scripts/test_analyzer.py --setup-alerts
+```
 
 ## Running Tests
 
@@ -64,35 +290,71 @@ python3 run_tests.py
 # Run specific category
 python3 run_tests.py --category performance
 
-# Run specific chapter tests
-python3 run_tests.py --chapter 5
+## Troubleshooting
+
+### Common Issues
+```bash
+# Check test environment
+./scripts/test_runner.py --check-env
+
+# Validate test configuration
+./scripts/test_runner.py --validate-config
+
+# Clean test results
+./scripts/test_runner.py --clean
 ```
 
-### Test Results
-Results are stored in `/sample_analysis_results/[date]/` with:
-- Test execution logs
-- Performance metrics
-- Coverage reports
-- Error analysis
+### Error Resolution
+1. **Test Timeouts**
+   - Increase `timeout_seconds` in test_config.yml
+   - Check system resources
+   - Reduce parallel test count
 
-## Key Features
-1. **Comprehensive Coverage**
-   - Functional testing
-   - Performance testing
-   - Security testing
-   - Error handling
+2. **Performance Issues**
+   - Monitor system metrics
+   - Adjust thresholds in config
+   - Check resource utilization
 
-2. **Test Patterns**
-   - Data-driven tests
-   - State-based tests
-   - Concurrent execution
-   - Exception handling
+3. **Test Failures**
+   - Check test logs
+   - Validate test data
+   - Verify environment setup
 
-3. **Best Practices**
-   - Test organization
-   - Code quality
-   - Documentation
-   - Result analysis
+### Getting Help
+```bash
+# Show detailed help
+./scripts/test_runner.py --help
+./scripts/test_analyzer.py --help
+./scripts/performance_tester.py --help
+```
+
+## Contributing
+1. Fork the repository
+2. Create your feature branch
+3. Add test cases following the examples
+4. Verify all tests pass
+5. Submit a pull request
+
+## License
+Copyright © 2025 JJ Shen. All rights reserved.
+The materials in this repository are based on the book and should be used in conjunction with the published text.
+
+## Quick Start
+```bash
+# Clone repository
+git clone https://github.com/jjshen/software-testing-book.git
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run test examples
+./scripts/test_runner.py --chapter 1
+
+# View results
+./scripts/test_analyzer.py --format html chapter_1
+```
+
+For detailed examples and solutions, refer to the chapter-specific test files in `/sample_analysis_results/sample_testing_code/`.
 
 ## Requirements
 - Python 3.x
@@ -102,38 +364,75 @@ Results are stored in `/sample_analysis_results/[date]/` with:
 
 ## Usage Examples
 
-### 1. Running Chapter Tests
+### 1. Running Tests
 ```python
 from test_runner import TestRunner
 
+# Run chapter tests
 runner = TestRunner()
-runner.run_chapter_tests(5)  # Run Chapter 5 tests
-```
+runner.run_chapter_tests(5)
 
-### 2. Performance Testing
-```python
+# Run performance tests
 from performance_tester import PerformanceTester
-
 tester = PerformanceTester()
 tester.run_load_test(users=100)
 ```
 
-### 3. Test Analysis
+### 2. Analyzing Results
 ```python
 from test_analyzer import TestAnalyzer
 
 analyzer = TestAnalyzer()
+
+# Generate report
 analyzer.generate_report("chapter_5")
+
+# Plot performance metrics
+analyzer.plot_metrics("performance")
 ```
 
-## Contributing
-1. Follow test organization patterns
-2. Include performance metrics
-3. Add error recovery cases
-4. Document all test cases
+### 3. Custom Test Configuration
+```yaml
+# workflows/yaml_workflows/test_config.yml
+test_settings:
+  parallel_tests: true
+  max_workers: 4
+  thresholds:
+    response_time_ms: 500
+    error_rate_percent: 1
+```
+### 4. Command Line Usage
+```bash
+# Run specific test types
+./scripts/test_runner.py --category unit
+./scripts/test_runner.py --category integration
+./scripts/test_runner.py --category performance
 
-## Documentation
-- Chapter solutions in `chapter_solutions.md`
-- Test patterns in respective files
+# Generate reports
+./scripts/test_analyzer.py --format html --chapter 5
+./scripts/test_analyzer.py --plot performance
+
+# Monitor execution
+./scripts/test_analyzer.py --monitor --dashboard
+```
+
+For more examples and detailed documentation, refer to the chapter-specific test files in `/sample_analysis_results/sample_testing_code/`.
+
+## Support and Resources
+
+### Getting Help
+1. Check troubleshooting section above
+2. Review example test cases in `/sample_analysis_results/sample_testing_code/`
+3. Run environment validation:
+   ```bash
+   ./scripts/test_runner.py --check-env
+   ./scripts/test_runner.py --validate-config
+   ```
+4. Submit an issue with detailed reproduction steps
+
+### Documentation
+- Chapter solutions in `/sample_analysis_results/sample_testing_code/`
+- Test configuration in `workflows/yaml_workflows/`
+- API documentation in script docstrings
 - Results analysis in test reports
 - Performance metrics in logs

@@ -6,8 +6,8 @@ import yaml
 import time
 import logging
 from datetime import datetime
-from prometheus_client import start_http_server, Gauge, Counter, Histogram
-from typing import Dict, Any
+from prometheus_client import start_http_server, Gauge, Counter, Histogram, CollectorRegistry
+from typing import Dict, Any, List
 
 class CIMonitor:
     def __init__(self):
@@ -47,51 +47,67 @@ class CIMonitor:
 
     def setup_metrics(self):
         """Setup Prometheus metrics"""
+        # Create registry
+        self.registry = CollectorRegistry()
+        
         # Test execution metrics
         self.test_duration = Histogram(
             'test_execution_duration_seconds',
             'Test execution duration',
-            ['category']
+            ['category'],
+            registry=self.registry
         )
         self.test_count = Counter(
             'test_total',
             'Total number of tests',
-            ['category', 'status']
+            ['category', 'status'],
+            registry=self.registry
         )
         
         # Resource metrics
         self.cpu_usage = Gauge(
             'ci_cpu_usage_percent',
-            'CI pipeline CPU usage'
+            'CI pipeline CPU usage',
+            registry=self.registry
         )
         self.memory_usage = Gauge(
             'ci_memory_usage_bytes',
-            'CI pipeline memory usage'
+            'CI pipeline memory usage',
+            registry=self.registry
         )
         
         # Quality metrics
         self.quality_score = Gauge(
             'data_quality_score',
             'Data quality score',
-            ['metric']
+            ['metric'],
+            registry=self.registry
         )
         
         # Pipeline metrics
         self.pipeline_duration = Histogram(
             'pipeline_duration_seconds',
             'Pipeline execution duration',
-            ['stage']
+            ['stage'],
+            registry=self.registry
         )
         self.pipeline_status = Gauge(
             'pipeline_status',
             'Pipeline execution status',
-            ['stage']
+            ['stage'],
+            registry=self.registry
         )
 
     def start_monitoring(self, port: int = 8000):
         """Start monitoring server"""
+        self.running = True
         start_http_server(port)
         self.logger.info(f"Monitoring server started on port {port}")
+        
+    def stop_monitoring(self):
+        """Stop monitoring server"""
+        self.running = False
+        self.logger.info("Monitoring server stopped")
 
     def record_test_execution(self, category: str, duration: float, status: str):
         """Record test execution metrics"""
@@ -215,10 +231,43 @@ class CIMonitor:
 
     def _get_test_metrics(self) -> Dict[str, Any]:
         """Get test execution metrics"""
-        return {
-            'total': self.test_count._metrics['test_total'],
-            'duration': self.test_duration._metrics['test_execution_duration_seconds']
-        }
+        try:
+            test_metrics = {
+                'total': 0,
+                'pass': 0,
+                'fail': 0,
+                'error': 0,
+                'skip': 0,
+                'duration': 0
+            }
+            
+            # Get test counts by status
+            for status in ['pass', 'fail', 'error', 'skip']:
+                try:
+                    value = float(self.test_count.labels(category='all', status=status)._value)
+                    test_metrics[status] = value
+                    test_metrics['total'] += value
+                except (KeyError, TypeError, ValueError):
+                    continue
+            
+            # Get duration metrics
+            try:
+                test_metrics['duration'] = float(self.test_duration.labels(category='all')._value)
+            except (KeyError, TypeError, ValueError):
+                pass
+                
+            return test_metrics
+            
+        except Exception as e:
+            self.logger.error(f"Error getting test metrics: {str(e)}")
+            return {
+                'total': 0,
+                'pass': 0,
+                'fail': 0,
+                'error': 0,
+                'skip': 0,
+                'duration': 0
+            }
 
     def _get_quality_metrics(self) -> Dict[str, float]:
         """Get quality metrics"""
