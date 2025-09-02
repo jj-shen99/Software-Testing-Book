@@ -41,21 +41,35 @@ This repository serves as the official companion code repository for the book. I
 ```
 .
 ├── code/                           # Example code implementations
-├── sample_analysis_results/        # Test solutions and analysis
+├── docs/                          # Documentation
+│   ├── user_guide.md              # Installation and usage guide
+│   └── architecture.md            # System design documentation
+├── sample_analysis_results/        # Test results and analysis
 │   ├── book_summary_2025_09_01/   # Book summary and analysis
-│   └── sample_testing_code/       # Chapter-wise test examples
-│       ├── chapter_1_tests.md     # Introduction to testing
-│       ├── chapter_2_tests.md     # Testing fundamentals
-│       ├── chapter_3_tests.md     # Testing methodologies
-│       ├── chapter_4_tests.md     # Test design techniques
-│       ├── chapter_5_tests.md     # Test implementation
-│       ├── chapter_6_8_tests.md   # Advanced testing
-│       └── chapter_9_11_tests.md  # Specialized testing
+│   └── test_results_*/            # Test execution results
+│       ├── metrics/               # Collected metrics data
+│       ├── alerts/                # Alert history
+│       └── visualizations/        # Generated charts
 ├── problems/                       # Exercise problems
-├── scripts/                        # Test automation scripts
-│   ├── test_runner.py             # Test execution
+├── scripts/                        # Test automation and monitoring
+│   ├── alert_manager.py           # Alert handling
+│   ├── ci_monitor.py              # CI system monitoring
+│   ├── data_quality_monitor.py    # Quality metrics tracking
+│   ├── data_quality_validator.py  # Data validation
+│   ├── generate_test_data.py      # Sample data generation
+│   ├── load_metrics.py            # Metrics data loading
+│   ├── metrics_collector.py       # Metrics collection
+│   ├── metrics_dashboard.py       # Web dashboard
+│   ├── metrics_visualizer.py      # Data visualization
+│   ├── start_dashboard.py         # Dashboard startup
 │   ├── test_analyzer.py           # Results analysis
+│   ├── test_runner.py             # Test execution
 │   └── performance_tester.py      # Performance testing
+├── workflows/                      # Configuration files
+│   └── yaml_workflows/
+│       ├── dashboard_config.yml   # Dashboard settings
+│       ├── monitoring_config.yml  # Monitoring settings
+│       └── test_workflow_config.yml # Test configuration
 └── requirements.txt               # Python dependencies
 ```
 
