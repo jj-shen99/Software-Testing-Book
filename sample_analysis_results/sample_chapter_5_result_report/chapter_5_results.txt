@@ -1,0 +1,6 @@
+Test 1: PASSED Time: 0.5s
+Test 2: PASSED Time: 0.7s
+Test 3: FAILED AssertionError: Expected value not equal Time: 0.6s
+Test 4: PASSED Time: 0.4s
+Test 5: FAILED TimeoutException: Test exceeded timeout Time: 1.2s
+Test 6: PASSED Time: 0.5s
